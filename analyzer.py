@@ -105,11 +105,11 @@ def parse_logs(data):
     records = []
     skipped = []                                # [(line_no, reason), ...]
     reader = csv.DictReader(io.StringIO(text))
-    for line_no, row in enumerate(reader, start=2):   # line 1 is the header
+    for row in reader:
         try:
             records.append(parse_row(row))
         except ValueError as e:
-            skipped.append((line_no, str(e)))
+            skipped.append((reader.line_num, str(e)))   # real file line, blank lines counted
     return records, skipped
 
 
@@ -375,6 +375,8 @@ def main():
 
     if args.start not in adj:
         print(f"Start host {args.start} not found in log.")
+        if skipped:
+            print(f"Note: {len(skipped)} row(s) were skipped as malformed; check the log.")
         return
     if args.target and args.target not in adj:
         print(f"Target host {args.target} not found in log.")
