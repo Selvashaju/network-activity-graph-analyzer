@@ -123,6 +123,7 @@ with right:
 st.subheader("Flagged edges (in scope)")
 st.dataframe([{"Source": u, "Destination": v, "Score": pts, "Severity": az.severity(pts),
                "Data (MB)": round(sum(r["bytes"] for r in edges[(u, v)]) / 1_000_000, 1),
+               "Time": ", ".join(sorted({r["time"].strftime("%d %b %H:%M") for r in edges[(u, v)]})),
                "Reasons": ", ".join(why)} for (u, v), (pts, why) in flagged],
              hide_index=True, width="stretch")
 
